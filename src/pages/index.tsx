@@ -6,8 +6,14 @@ import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from abc" });
-  const { data: getAll } = api.example.getAll.useQuery();
+  const { data: getAll, isLoading } = api.example.getAll.useQuery();
   console.log(getAll);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!getAll || !getAll[0]) return <div>Something went wrong</div>;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const urlTest: string = getAll[0]?.body;
   return (
     <>
       <Head>
@@ -47,6 +53,8 @@ const Home: NextPage = () => {
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
+          <img src={urlTest} alt="test" />
+          <img src="https://avid-gallery.s3.amazonaws.com/00002-2472655210.png" alt="test" />
         </div>
       </main>
     </>

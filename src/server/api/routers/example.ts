@@ -12,7 +12,7 @@ export const exampleRouter = createTRPCRouter({
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.example.findMany()
-    console.log(posts)
+    // console.log(posts)
     return posts;
   }),
 });
