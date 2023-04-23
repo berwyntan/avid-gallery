@@ -14,8 +14,9 @@ model Images {
     id       String   @id @default(auto()) @map("_id") @db.ObjectId
     prompt   String   
     prog     String
-    model    String
     imgurl   String
     insta    String
-    inpaint  Boolean
+    img2img  String
+    seq      Int
+    tag      String[]
 }
