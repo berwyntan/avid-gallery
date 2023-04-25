@@ -1,15 +1,15 @@
-import Link from "next/link";
+import { api } from "~/utils/api";
 
-const TagButton = () => {
+const TagButton = (props: { tag: string }) => {
+  if (props.tag === "All") {
+    // call something else
+  }
+
   return (
     <>
-      <Link
-        className="flex flex-col gap-4 rounded-lg bg-white/10 p-2 text-white hover:bg-white/20"
-        href="https://create.t3.gg/en/usage/first-steps"
-        target="_blank"
-      >
-        <div className="font-semibold">All</div>
-      </Link>
+      <div className="flex flex-col gap-4 rounded-lg bg-white/10 p-2 text-white hover:bg-white/20">
+        <div className="font-semibold">{props.tag}</div>
+      </div>
     </>
   );
 };

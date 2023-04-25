@@ -20,3 +20,7 @@ model Images {
     seq      Int
     tag      String[]
 }
+model Tags {
+    id       String   @id @default(auto()) @map("_id") @db.ObjectId
+    name     String   
+}

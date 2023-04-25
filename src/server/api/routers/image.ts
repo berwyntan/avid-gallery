@@ -19,4 +19,14 @@ export const imageRouter = createTRPCRouter({
     // console.log(posts)
     return posts;
   }),
+  findByTag: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const posts = await ctx.prisma.images.findMany({
+        orderBy: {
+          seq: "desc",
+        },
+      }); 
+      return input.text;
+    }),
 });

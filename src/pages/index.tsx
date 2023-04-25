@@ -5,13 +5,18 @@ import TagButton from "~/components/tagButton";
 
 import { api } from "~/utils/api";
 
+
+
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from abc" });
   const { data: getAll, isLoading } = api.image.getAll.useQuery();
   console.log(getAll);
+  const { data: allTags, isLoading: isLoading2 } = api.tag.getAll.useQuery();
+  console.log(allTags);
 
   if (isLoading) return <div>Loading...</div>;
   if (!getAll) return <div>Something went wrong</div>;
+  if (!allTags) return <div>Something went wrong</div>;
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   // const urlTest: string = getAll[0]?.body;
@@ -27,22 +32,24 @@ const Home: NextPage = () => {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             ai<span className="text-[hsl(194,62%,58%)]">.avid</span> prompts
           </h1>
-          <div className="flex gap-2 md:gap-4">
-            <TagButton />
-            <TagButton />
+          <div className="flex flex-wrap flex-start gap-2 md:gap-4">
+            {allTags.map((tag) => {
+              return <TagButton key={tag.id} tag={tag.name} />;
+            })}
+            
           </div>
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
 
-          <div className="flex-start mt-8 flex justify-center flex-row flex-wrap">
+          <div className="flex-start mt-8 flex flex-row flex-wrap justify-center">
             {getAll.map((p) => {
               return (
-                <div
-                  className="w-4/12 md:w-3/12 lg:w-1/5"
-                  key={p.seq}
-                >
-                  <img src={p.imgurl} className="aspect-[3/4] object-cover p-1"/>
+                <div className="w-4/12 md:w-3/12 lg:w-1/5" key={p.seq}>
+                  <img
+                    src={p.imgurl}
+                    className="aspect-[3/4] object-cover p-1"
+                  />
                 </div>
               );
             })}
