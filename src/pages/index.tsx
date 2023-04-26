@@ -1,25 +1,25 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import TagButton from "~/components/tagButton";
+import { appRouter } from "~/server/api/root";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 
 import { api } from "~/utils/api";
-
-
+import { prisma } from "~/server/db";
+import superjson from "superjson";
 
 const Home: NextPage = () => {
+  
   const hello = api.example.hello.useQuery({ text: "from abc" });
   const { data: getAll, isLoading } = api.image.getAll.useQuery();
-  console.log(getAll);
+  
   const { data: allTags, isLoading: isLoading2 } = api.tag.getAll.useQuery();
-  console.log(allTags);
 
   if (isLoading) return <div>Loading...</div>;
   if (!getAll) return <div>Something went wrong</div>;
+  if (isLoading2) return <div>Loading...</div>;
   if (!allTags) return <div>Something went wrong</div>;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  // const urlTest: string = getAll[0]?.body;
   return (
     <>
       <Head>
@@ -32,11 +32,10 @@ const Home: NextPage = () => {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             ai<span className="text-[hsl(194,62%,58%)]">.avid</span> prompts
           </h1>
-          <div className="flex flex-wrap flex-start gap-2 md:gap-4">
+          <div className="flex-start flex flex-wrap gap-2 md:gap-4">
             {allTags.map((tag) => {
               return <TagButton key={tag.id} tag={tag.name} />;
             })}
-            
           </div>
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
@@ -59,5 +58,23 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export async function getStaticProps() {
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: { prisma },
+    transformer: superjson, // optional - adds superjson serialization
+  });
+
+  await helpers.image.getAll.prefetch();
+  await helpers.tag.getAll.prefetch();
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+    revalidate: 36000,
+  };
+}
 
 export default Home;
