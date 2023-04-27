@@ -4,11 +4,13 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { PageLayout } from "~/components/layout";
+import Navbar from "~/components/navbar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <PageLayout>
+        <Navbar />
         <Component {...pageProps} />
       </PageLayout>
     </>

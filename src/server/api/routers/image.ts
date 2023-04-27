@@ -26,7 +26,8 @@ export const imageRouter = createTRPCRouter({
         orderBy: {
           seq: "desc",
         },
-      }); 
-      return input.text;
+        where: { tag: { has: input.text } },
+      });
+      return posts;
     }),
 });
