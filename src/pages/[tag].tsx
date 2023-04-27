@@ -5,8 +5,9 @@ import { generateSSGHelper } from "~/server/api/helpers/ssgHelper";
 import { api } from "~/utils/api";
 
 const ImageFilteredByTag: NextPage<{ tag: string }> = ({ tag }) => {
-  const { data } = api.image.findByTag.useQuery({ text: tag });
+  const { data, isLoading } = api.image.findByTag.useQuery({ text: tag });
 
+  if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>Something went wrong.</div>;
 
   const { data: allTags, isLoading: isLoading2 } = api.tag.getAll.useQuery();
@@ -17,12 +18,9 @@ const ImageFilteredByTag: NextPage<{ tag: string }> = ({ tag }) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#090016] to-[#15162c]">
       <div className="container flex flex-col items-center justify-center gap-6 px-1 py-12 ">
-        
         <div className="flex-start flex flex-wrap gap-2 md:gap-4">
-          
           <TagButtonsLayout allTags={allTags} />
         </div>
-       
 
         <div className="flex-start mt-8 flex flex-row flex-wrap justify-center">
           <Images getAll={data} />
